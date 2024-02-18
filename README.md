@@ -20,10 +20,10 @@ duplo.use(duploWhatWasSent);
 
 duplo.declareRoute("GET", "/test/1")
 .handler(
-	({}, res) => {
-		res.code(200).send(100);
-	},
-	new IHaveSentThis(200, zod.string()) 
+    ({}, res) => {
+        res.code(200).send(100);
+    },
+    new IHaveSentThis(200, zod.string()) 
 );
 
 duplo.launch();
