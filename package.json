@@ -6,12 +6,25 @@
   "repository": "https://github.com/duplojs/duplojs-what-was-sent",
   "license": "ISC",
   "keywords": [],
-  "types": "./types/scripts/.d.ts",
-  "exports": {
-    "default": {
-      "import": "./dist/.mjs",
-      "require": "./dist/.cjs"
+  "typesVersions": {
+    "*": {
+      "global": [
+        "./types/scripts/global.d.ts"
+      ],
+      "*": [
+        "./types/scripts/index.d.ts"
+      ]
     }
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+	"./global": {
+	  "import": "./dist/global.mjs",
+      "require": "./dist/global.cjs"
+	}
   },
   "files": [
     "dist",
