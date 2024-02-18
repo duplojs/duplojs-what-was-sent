@@ -4,14 +4,35 @@ import json from "@rollup/plugin-json";
 
 export default defineConfig([
 	{
-		input: "scripts/",
+		input: "scripts/index.ts",
 		output: [
 			{
-				file: "dist/.mjs",
+				file: "dist/index.mjs",
 				format: "esm"
 			},
 			{
-				file: "dist/.cjs",
+				file: "dist/index.cjs",
+				format: "cjs",
+			}
+		],
+		plugins: [
+			esbuild({
+				include: /\.[jt]sx?$/,
+				exclude: /node_modules/,
+				tsconfig: "tsconfig.json",
+			}),
+			json(),
+		]
+	},
+	{
+		input: "scripts/global.ts",
+		output: [
+			{
+				file: "dist/global.mjs",
+				format: "esm"
+			},
+			{
+				file: "dist/global.cjs",
 				format: "cjs",
 			}
 		],
