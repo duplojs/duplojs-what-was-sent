@@ -6,12 +6,13 @@ const injectedScript = (index: number) => /* js */ `
 if(injectError instanceof this.extensions["@duplojs/what-was-sent"].Response){
 	const result = this.extensions["@duplojs/what-was-sent"].iHaveSentThisCollection[${index}].safeParse({
 		code: injectError.status,
-		body: injectError.body
+		body: injectError.body,
+		info: injectError.information,
 	});
 
 	if(!result.success){
 		injectError.isSend = false;
-		injectError.code(500).info("WHAT_WAS_SENT_ERROR").send(result.error);
+		injectError.code(500).info("WHAT_WAS_SENT_ERROR").send(result.error.toString());
 	}
 }
 
@@ -41,7 +42,10 @@ export function injecter(duplose: Process | AbstractRoute | Route){
 				const zodSchemas = findedIHaveSentThis.map(
 					value => zod.object({
 						code: zod.literal(value.code),
-						body: value.zodType
+						body: value.zod,
+						info: value.info 
+							? zod.enum(value.info as any)
+							: zod.undefined()
 					})
 				);
 

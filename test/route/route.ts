@@ -53,4 +53,21 @@ duplo.declareRoute("GET", "/test/4")
 	new IHaveSentThis(200, zod.number())
 );
 
+duplo.declareRoute("GET", "/test/5")
+.handler(
+	({}, res) => {
+		res.code(200).info("test").send(100);
+	},
+	new IHaveSentThis(200, "toto", zod.number()),
+);
+
+duplo.declareRoute("GET", "/test/6")
+.handler(
+	({}, res) => {
+		res.code(200).info("test").send(100);
+	},
+	new IHaveSentThis(200, "toto", zod.string()),
+	new IHaveSentThis(200, ["test", "zozo"], zod.number()),
+);
+
 duplo.launch(() => parentPort?.postMessage("ready"));
