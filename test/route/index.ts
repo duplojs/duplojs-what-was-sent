@@ -43,5 +43,25 @@ export default workerTesting(
 				body: zod.literal("100")
 			}
 		},
+		{
+			title: "info catch",
+			url: "http://localhost:1506/test/5",
+			method: "GET",
+			response: {
+				code: 500,
+				info: "WHAT_WAS_SENT_ERROR",
+				body: zod.string()
+			}
+		},
+		{
+			title: "info catch",
+			url: "http://localhost:1506/test/6",
+			method: "GET",
+			response: {
+				code: 200,
+				info: "test",
+				body: zod.literal("100")
+			}
+		},
 	]
 );
