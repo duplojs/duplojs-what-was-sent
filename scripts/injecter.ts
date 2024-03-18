@@ -1,8 +1,11 @@
-import {AbstractRoute, Process, Route, zod, Response} from "@duplojs/duplojs";
+import {AbstractRoute, Process, Route, zod, Response, DuploInstance, DuploConfig} from "@duplojs/duplojs";
 import {duploExtends, duploInject} from "@duplojs/editor-tools";
+import {HttpException, CustomHttpException} from "@duplojs/http-exception";
 import {IHaveSentThis} from ".";
 
-const injectedScript = (index: number) => /* js */ `
+const injectedScript = (index: number) => /* js */`
+/* first_line_what_was_sent_catch_[${index}] */
+/* end_block */
 if(injectError instanceof this.extensions["@duplojs/what-was-sent"].Response){
 	const result = this.extensions["@duplojs/what-was-sent"].iHaveSentThisCollection[${index}].safeParse({
 		code: injectError.status,
@@ -19,25 +22,42 @@ if(injectError instanceof this.extensions["@duplojs/what-was-sent"].Response){
 throw injectError;
 `;
 
+const injectedPreflightHttpException = () => /* js */`
+if(injectError instanceof this.extensions["@duplojs/what-was-sent"].HttpException){
+	try {
+		if(injectError instanceof this.extensions["@duplojs/what-was-sent"].CustomHttpException){
+			injectError.handler(request, response);
+		}
+		response.code(injectError.code).info(injectError.info).send(injectError.data);
+	} catch {}
 
-export function injecter(duplose: Process | AbstractRoute | Route){
+	injectError = response;
+}
+`;
+
+
+export function injecter(instance: DuploInstance<DuploConfig>, duplose: Process | AbstractRoute | Route){
 	const iHaveSentThisCollection: Array<zod.ZodType> = [];
 	duploExtends(
 		duplose, 
 		{
 			"@duplojs/what-was-sent": {
 				iHaveSentThisCollection, 
-				Response
+				Response,
+				HttpException,
+				CustomHttpException,
 			}
 		}
 	);
 
 	duploInject(
 		duplose,
-		({tryCatch}) => {
+		({tryCatch, code}) => {
 			duplose.descs.forEach(desc => {
 				const findedIHaveSentThis: IHaveSentThis[] = desc.descStep.filter(d => d instanceof IHaveSentThis);
+
 				if(findedIHaveSentThis.length == 0) return;
+				if(!["cut", "checker", "handler"].includes(desc.type)) return;
 
 				const zodSchemas = findedIHaveSentThis.map(
 					value => zod.object({
@@ -48,16 +68,16 @@ export function injecter(duplose: Process | AbstractRoute | Route){
 							: zod.undefined()
 					})
 				);
-
+	
 				iHaveSentThisCollection.push(
 					zodSchemas.length === 1
 						? zodSchemas[0] 
 						: zod.union(zodSchemas as any)
 				);
-
+	
 				const indexCollection = iHaveSentThisCollection.length - 1;
-					
-				if(desc.type == "cut" || desc.type == "checker"){
+
+				if(desc.type === "cut" || desc.type === "checker"){
 					tryCatch(
 						`before_step_[${desc.index}]`,
 						`after_drop_step_[${desc.index}]`,
@@ -65,12 +85,19 @@ export function injecter(duplose: Process | AbstractRoute | Route){
 						"bottom-top"
 					);
 				}
-				else if(desc.type == "handler"){
+				else {
 					tryCatch(
 						"before_handler",
 						"before_no_respose_sent",
 						injectedScript(indexCollection),
 						"bottom-top"
+					);
+				}
+
+				if(instance.plugins["@duplojs/http-exception"]){
+					code(
+						`first_line_what_was_sent_catch_[${indexCollection}]` as any,
+						injectedPreflightHttpException()
 					);
 				}
 			});
