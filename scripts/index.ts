@@ -48,12 +48,12 @@ export default function duploWhatWasSent(
 	if(instance.config.environment != "DEV") return;
 
 	instance.addHook("beforeBuildRouter", () => {
-		instance.processes.forEach(injecter);
+		instance.processes.forEach(process => injecter(instance, process));
 		instance.abstractRoutes.forEach(ar => {
 			if(ar instanceof AbstractRoute){
-				injecter(ar);
+				injecter(instance, ar);
 			}
 		});
-		Object.values(instance.routes).flat().forEach(injecter);
+		Object.values(instance.routes).flat().forEach(route => injecter(instance, route));
 	});
 }
