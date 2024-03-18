@@ -1,7 +1,6 @@
 import {AbstractRoute, DuploConfig, DuploInstance, Response, zod} from "@duplojs/duplojs";
 import packageJson from "../package.json";
 import {injecter} from "./injecter";
-import {info} from "console";
 
 declare module "@duplojs/duplojs" {
     interface Plugins{
@@ -29,8 +28,22 @@ export class IHaveSentThis{
 	}
 }
 
-export default function duploWhatWasSent(instance: DuploInstance<DuploConfig>){
+export interface WhatWasSentParameters {
+	globals?: boolean;
+}
+
+export default function duploWhatWasSent(
+	instance: DuploInstance<DuploConfig>,
+	{
+		globals = false
+	}: WhatWasSentParameters = {}
+){
 	instance.plugins["@duplojs/what-was-sent"] = {version: packageJson.version};
+
+	if(globals){
+		//@ts-ignore
+		global.IHaveSentThis = IHaveSentThis;
+	}
 
 	if(instance.config.environment != "DEV") return;
 

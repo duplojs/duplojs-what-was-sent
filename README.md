@@ -6,12 +6,10 @@
 npm i @duplojs/what-was-sent
 ```
 
-## Utilisation
+## Implémentation
 ```ts
 import Duplo, {zod} from "@duplojs/duplojs";
 import duploWhatWasSent, {IHaveSentThis} from "@duplojs/what-was-sent";
-import "@duplojs/what-was-sent/global"; //global import IHaveSentThis
-
 
 const duplo = Duplo({port: 1506, host: "localhost", environment: "DEV"});
 
@@ -27,4 +25,25 @@ duplo.declareRoute("GET", "/test/1")
 );
 
 duplo.launch();
+```
+
+## Implémentation globales
+
+```ts
+duplo.use(duploWhatWasSent, {
+    ...
+    globals: true
+});
+```
+
+tsconfig.json
+```json
+{
+  "compilerOptions": {
+    ...
+    "types": [
+        "@duplojs/what-was-sent/globals"
+    ],
+  }
+}
 ```
