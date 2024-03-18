@@ -24,25 +24,4 @@ export default defineConfig([
 			json(),
 		]
 	},
-	{
-		input: "scripts/global.ts",
-		output: [
-			{
-				file: "dist/global.mjs",
-				format: "esm"
-			},
-			{
-				file: "dist/global.cjs",
-				format: "cjs",
-			}
-		],
-		plugins: [
-			esbuild({
-				include: /\.[jt]sx?$/,
-				exclude: /node_modules/,
-				tsconfig: "tsconfig.json",
-			}),
-			json(),
-		]
-	},
 ]);
