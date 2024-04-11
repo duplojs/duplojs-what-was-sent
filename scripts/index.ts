@@ -9,7 +9,11 @@ declare module "@duplojs/duplojs" {
 }
 
 export class IHaveSentThis{
-	public zod: zod.ZodType;
+	public bodyZodSchema: zod.ZodType;
+	/**@deprecated */
+	public get zod(){
+		return this.bodyZodSchema;
+	}
 	public info?: string[] = undefined;
 
 	constructor(code: number, zod?: zod.ZodType)
@@ -20,10 +24,10 @@ export class IHaveSentThis{
 	){
 		if(typeof payload[0] === "string" || payload[0] instanceof Array){
 			this.info = typeof payload[0] === "string" ? [payload[0]] : payload[0];
-			this.zod = payload[1] instanceof zod.ZodType ? payload[1] : zod.undefined();
+			this.bodyZodSchema = payload[1] instanceof zod.ZodType ? payload[1] : zod.undefined();
 		}
 		else {
-			this.zod =  payload[0] instanceof zod.ZodType ? payload[0] : zod.undefined();
+			this.bodyZodSchema =  payload[0] instanceof zod.ZodType ? payload[0] : zod.undefined();
 		}
 	}
 }
