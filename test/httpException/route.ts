@@ -13,7 +13,9 @@ const checkerTest = duplo.createChecker("test")
 .build();
 
 duplo.use(duploHttpException);
-duplo.use(duploWhatWasSent);
+duplo.use(duploWhatWasSent, {
+	enabled: true
+});
 
 duplo.declareRoute("GET", "/test/1")
 .handler(

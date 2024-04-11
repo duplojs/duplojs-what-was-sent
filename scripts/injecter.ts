@@ -56,13 +56,13 @@ export function injecter(instance: DuploInstance<DuploConfig>, duplose: Process 
 			duplose.descs.forEach(desc => {
 				const findedIHaveSentThis: IHaveSentThis[] = desc.descStep.filter(d => d instanceof IHaveSentThis);
 
-				if(findedIHaveSentThis.length == 0) return;
+				if(findedIHaveSentThis.length === 0) return;
 				if(!["cut", "checker", "handler"].includes(desc.type)) return;
 
 				const zodSchemas = findedIHaveSentThis.map(
 					value => zod.object({
 						code: zod.literal(value.code),
-						body: value.zod,
+						body: value.bodyZodSchema,
 						info: value.info 
 							? zod.enum(value.info as any)
 							: zod.undefined()
