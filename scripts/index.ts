@@ -29,13 +29,15 @@ export class IHaveSentThis{
 }
 
 export interface WhatWasSentParameters {
+	enabled?: boolean;
 	globals?: boolean;
 }
 
 export default function duploWhatWasSent(
 	instance: DuploInstance<DuploConfig>,
 	{
-		globals = false
+		enabled = false,
+		globals = false,
 	}: WhatWasSentParameters = {}
 ){
 	instance.plugins["@duplojs/what-was-sent"] = {version: packageJson.version};
@@ -45,7 +47,7 @@ export default function duploWhatWasSent(
 		global.IHaveSentThis = IHaveSentThis;
 	}
 
-	if(instance.config.environment != "DEV") return;
+	if(!enabled) return;
 
 	instance.addHook("beforeBuildRouter", () => {
 		instance.processes.forEach(process => injecter(instance, process));

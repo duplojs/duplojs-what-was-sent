@@ -13,8 +13,9 @@ import duploWhatWasSent, {IHaveSentThis} from "@duplojs/what-was-sent";
 
 const duplo = Duplo({port: 1506, host: "localhost", environment: "DEV"});
 
-// this plugin is allow only in DEV environment
-duplo.use(duploWhatWasSent);
+duplo.use(duploWhatWasSent, {
+    enabled: duplo.config.environment ===  "DEV"
+});
 
 duplo.declareRoute("GET", "/test/1")
 .handler(
