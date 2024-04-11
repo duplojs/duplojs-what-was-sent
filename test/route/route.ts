@@ -11,7 +11,9 @@ const checkerTest = duplo.createChecker("test")
 })
 .build();
 
-duplo.use(duploWhatWasSent);
+duplo.use(duploWhatWasSent, {
+	enabled: true
+});
 
 duplo.declareRoute("GET", "/test/1")
 .handler(
@@ -26,6 +28,8 @@ duplo.declareRoute("GET", "/test/2")
 .cut(
 	({}, res) => {
 		res.send("test");
+
+		return {};
 	},
 	undefined,
 	new IHaveSentThis(404)
