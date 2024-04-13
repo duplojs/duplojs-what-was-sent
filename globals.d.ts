@@ -1,4 +1,4 @@
 export {};
 declare global {
-	const IHaveSentThis: typeof import("./types/scripts/index")["IHaveSentThis"];
+	const IHaveSentThis: typeof import("./types/index")["IHaveSentThis"];
 }
