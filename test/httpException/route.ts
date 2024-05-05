@@ -22,7 +22,7 @@ duplo.declareRoute("GET", "/test/1")
 	({}, res) => {
 		throw new OkHttpException(undefined, 200);
 	},
-	new IHaveSentThis(200, zod.string()),
+	new IHaveSentThis(200, () => zod.string()),
 	new IHaveSentThis(204, zod.number())
 );
 
@@ -73,7 +73,7 @@ duplo.declareRoute("GET", "/test/6")
 		throw new OkHttpException("test", 100);
 	},
 	new IHaveSentThis(200, "toto", zod.string()),
-	new IHaveSentThis(200, ["test", "zozo"], zod.number()),
+	new IHaveSentThis(200, ["test", "zozo"], () => zod.number()),
 );
 
 duplo.launch(() => parentPort?.postMessage("ready"));

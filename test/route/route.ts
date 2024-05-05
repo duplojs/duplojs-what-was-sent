@@ -20,7 +20,7 @@ duplo.declareRoute("GET", "/test/1")
 	({}, res) => {
 		res.code(200).send(100);
 	},
-	new IHaveSentThis(200, zod.string()),
+	new IHaveSentThis(200, () => zod.string()),
 	new IHaveSentThis(204, zod.number())
 );
 
@@ -62,7 +62,7 @@ duplo.declareRoute("GET", "/test/5")
 	({}, res) => {
 		res.code(200).info("test").send(100);
 	},
-	new IHaveSentThis(200, "toto", zod.number()),
+	new IHaveSentThis(200, "toto", () => zod.number()),
 );
 
 duplo.declareRoute("GET", "/test/6")
@@ -70,7 +70,7 @@ duplo.declareRoute("GET", "/test/6")
 	({}, res) => {
 		res.code(200).info("test").send(100);
 	},
-	new IHaveSentThis(200, "toto", zod.string()),
+	new IHaveSentThis(200, "toto", () => zod.string()),
 	new IHaveSentThis(200, ["test", "zozo"], zod.number()),
 );
 
