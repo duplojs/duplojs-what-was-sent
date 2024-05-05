@@ -31,6 +31,9 @@ export default workerTesting(
 			response: {
 				code: 500,
 				info: "WHAT_WAS_SENT_ERROR",
+				headers: {
+					"catched-code": "404",
+				},
 				body: zod.string()
 			}
 		},
@@ -50,6 +53,10 @@ export default workerTesting(
 			response: {
 				code: 500,
 				info: "WHAT_WAS_SENT_ERROR",
+				headers: {
+					"catched-code": "200",
+					"catched-info": "test",
+				},
 				body: zod.string()
 			}
 		},

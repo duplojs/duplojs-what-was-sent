@@ -15,7 +15,12 @@ if(injectError instanceof this.extensions["@duplojs/what-was-sent"].Response){
 
 	if(!result.success){
 		injectError.isSend = false;
-		injectError.code(500).info("WHAT_WAS_SENT_ERROR").send(result.error.toString());
+		injectError
+		.setHeader("catched-code", injectError.status)
+		.setHeader("catched-info", injectError.information)
+		.code(500)
+		.info("WHAT_WAS_SENT_ERROR")
+		.send(result.error.toString());
 	}
 }
 
@@ -54,10 +59,10 @@ export function injecter(instance: DuploInstance<DuploConfig>, duplose: Process 
 		duplose,
 		({tryCatch, code}) => {
 			duplose.descs.forEach(desc => {
-				const findedIHaveSentThis: IHaveSentThis[] = desc.descStep.filter(d => d instanceof IHaveSentThis);
-
-				if(findedIHaveSentThis.length === 0) return;
 				if(!["cut", "checker", "handler"].includes(desc.type)) return;
+
+				const findedIHaveSentThis: IHaveSentThis[] = desc.descStep.filter(d => d instanceof IHaveSentThis);
+				if(findedIHaveSentThis.length === 0) return;
 
 				const zodSchemas = findedIHaveSentThis.map(
 					value => zod.object({
