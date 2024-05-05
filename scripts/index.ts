@@ -16,19 +16,17 @@ export class IHaveSentThis{
 	}
 	public info?: string[] = undefined;
 
-	constructor(code: number, zod?: zod.ZodType)
-	constructor(code: number, info: string | string[], zod?: zod.ZodType)
+	constructor(code: number, zod?: zod.ZodType | (() => zod.ZodType))
+	constructor(code: number, info: string | string[], zod?: zod.ZodType | (() => zod.ZodType))
 	constructor(
 		public code: number,
-		...payload: (string | string[] | zod.ZodType | undefined)[]
+		...payload: (string | string[] | zod.ZodType | (() => zod.ZodType)| undefined)[]
 	){
-		if(typeof payload[0] === "string" || payload[0] instanceof Array){
-			this.info = typeof payload[0] === "string" ? [payload[0]] : payload[0];
-			this.bodyZodSchema = payload[1] instanceof zod.ZodType ? payload[1] : zod.undefined();
-		}
-		else {
-			this.bodyZodSchema =  payload[0] instanceof zod.ZodType ? payload[0] : zod.undefined();
-		}
+		const info = payload.find(v => typeof v === "string" || v instanceof Array) as string | string[] | undefined;
+		const zodSchema = payload.find(v => typeof v === "function" || v instanceof zod.ZodType) as zod.ZodType | (() => zod.ZodType) | undefined;
+
+		this.info = typeof info === "string" ? [info] : info;
+		this.bodyZodSchema = (typeof zodSchema === "function" ? zodSchema() : zodSchema) || zod.undefined();
 	}
 }
 
